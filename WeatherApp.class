@@ -1,0 +1,49 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.json.JSONObject;
+
+public class WeatherApp {
+   public WeatherApp() {
+   }
+
+   public static void main(String[] var0) {
+      String var1 = "https://api.open-meteo.com/v1/forecast?latitude=18.5204&longitude=73.8567&current_weather=true";
+
+      try {
+         URL var2 = new URL(var1);
+         HttpURLConnection var3 = (HttpURLConnection)var2.openConnection();
+         var3.setRequestMethod("GET");
+         int var4 = var3.getResponseCode();
+         if (var4 == 200) {
+            BufferedReader var5 = new BufferedReader(new InputStreamReader(var3.getInputStream()));
+            StringBuilder var7 = new StringBuilder();
+
+            String var6;
+            while((var6 = var5.readLine()) != null) {
+               var7.append(var6);
+            }
+
+            var5.close();
+            JSONObject var8 = new JSONObject(var7.toString());
+            JSONObject var9 = var8.getJSONObject("current_weather");
+            double var10 = var9.getDouble("temperature");
+            double var12 = var9.getDouble("windspeed");
+            int var14 = var9.getInt("winddirection");
+            int var15 = var9.getInt("is_day");
+            System.out.println("Current Weather in Pune:");
+            System.out.println("Temperature: " + var10 + "Â°C");
+            System.out.println("Wind Speed: " + var12 + " km/h");
+            System.out.println("Wind Direction: " + var14 + "Â°");
+            System.out.println("Is it Day? " + (var15 == 1 ? "Yes" : "No"));
+         } else {
+            System.out.println("Error: Unable to fetch weather data. Response code: " + var4);
+         }
+      } catch (Exception var16) {
+         var16.printStackTrace();
+      }
+
+   }
+}
